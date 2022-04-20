@@ -17,14 +17,13 @@ export const getDatesFromText = (text: string) => {
             i === 0 ? result += array[i] : result += ', ' + array[i];
         }
     }
-
     return result;
 }
 
 //Get note from array by id
 export function getNoteById(notes: Note[], id: number) {
     let result: Note = new Note(-1);
-    if (notes.length !== 0) {
+    if (notes.length !== 0 && id>=0) {
         notes.map((item) => {
             if (item.getId() === id) {
                 result = item;

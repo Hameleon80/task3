@@ -2,8 +2,9 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import express from 'express';
-import indexRouter from './routes/index';
+import indexRouter from './routes/indexRouter';
 import errorHandler from './middleware/ErrorHandlingMiddleware'
+import { ArchiveNotes, Notes } from './repositories/initialData';
 import { Note } from './repositories/Note';
 
 //variables

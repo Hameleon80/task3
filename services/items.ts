@@ -12,11 +12,11 @@ class Items {
      * @param resp - http response
      * @returns - updated arrays
      */
-    static createNote (req: Request, resp: Response ){
-        const {name, date, category, text} = req.body;
-        const newNote = new Note(Notes.notes.length, name, date, category, text);
+    static createNote(req: Request, resp: Response) {
+        const { name, date, category, text } = req.body;
+        const newNote = new Note(Notes.notes.length + ArchiveNotes.notes.length, name, date, category, text);
         Notes.notes.push(newNote);
-        return resp.status(200).json({NOTES: Notes.notes, ARCHIVED: ArchiveNotes.notes});
+        return resp.status(200).json(Notes.notes);
     }
     /**
      * Edits given note
@@ -32,7 +32,7 @@ class Items {
             let changedNote: Note;
             changedNote = getNoteById(Notes.notes, +id);
             changedNote = fillNoteValues(req, changedNote)
-            return resp.status(200).json({NOTES: Notes.notes, ARCHIVED: ArchiveNotes.notes});
+            return resp.status(200).json(Notes.notes);
         } catch (e) {
             next(e);
         }
@@ -49,32 +49,34 @@ class Items {
         let isValidId = false;
         //find in active notes
         Notes.notes.map((value) => {
-            if(value.getId() === +id){
+            if (value.getId() === +id) {
                 isValidId = true;
             }
         })
         //Delete from active notes
-        if(isValidId){
+        if (isValidId) {
             Notes.notes = deleteNoteById(Notes.notes, +id);
-        }
-        //find in archive notes
-        ArchiveNotes.notes.map((value) => {
-            if(value.getId() === +id){
-                isValidId = true;
+        } else {
+            //find in archive notes
+            ArchiveNotes.notes.map((value) => {
+                if (value.getId() === +id) {
+                    isValidId = true;
+                }
+            })
+            //Delete from archive notes
+            if (isValidId) {
+                ArchiveNotes.notes = deleteNoteById(ArchiveNotes.notes, +id);
             }
-        })
-        //Delete from archive notes
-        if(isValidId){
-            ArchiveNotes.notes = deleteNoteById(Notes.notes, +id);
         }
-        if(!isValidId) {
+        //If there is not notes with given id, throws error
+        if (!isValidId) {
             throw new ApiError(404, "Note is already not exist")
         }
-        
-        return resp.json({NOTES: Notes.notes, ARCHIVE: ArchiveNotes.notes});
+
+        return resp.json({ NOTES: Notes.notes, ARCHIVE: ArchiveNotes.notes });
     }
     /**
-     * Extract note from array
+     * Retrieve note from array
      * 
      * @param req - http request
      * @param resp - http response
@@ -85,33 +87,33 @@ class Items {
         let isValidId = false;
         let result: Note = new Note(+id);
         Notes.notes.map((value) => {
-            if(value.getId() === +id){
+            if (value.getId() === +id) {
                 isValidId = true;
             }
         })
         //If note in active notes, move it to archive
-        if(isValidId){
+        if (isValidId) {
             result = getNoteById(Notes.notes, +id);
             Notes.notes = deleteNoteById(Notes.notes, +id);
             ArchiveNotes.notes.push(result);
-        } else{
+        } else {
             //Else if note in archive move it from archive to active notes
-            ArchiveNotes.notes.map((value)=>{
-                if(value.getId() === +id){
+            ArchiveNotes.notes.map((value) => {
+                if (value.getId() === +id) {
                     isValidId = true;
                 }
             })
-            if(isValidId){
+            if (isValidId) {
                 result = getNoteById(ArchiveNotes.notes, +id);
                 ArchiveNotes.notes = deleteNoteById(ArchiveNotes.notes, +id);
                 Notes.notes.push(result);
             }
         }
-        if(!isValidId) {
+        if (!isValidId) {
             throw new ApiError(404, "Note don't exist")
         }
-        
-        return resp.json({NOTES: Notes.notes, ARCHIVE: ArchiveNotes.notes});
+
+        return resp.json({ NOTES: Notes.notes, ARCHIVE: ArchiveNotes.notes });
     }
     /**
      * Getts all active and archived notes 
@@ -120,11 +122,11 @@ class Items {
      * @param resp - http response
      * @returns - object that containce two arrays (active notes and archived notes)
      */
-    static getAllNotes(req: Request, resp: Response){
-        return resp.json({NOTES: Notes.notes, ARCHIVE: ArchiveNotes.notes});
+    static getAllNotes(req: Request, resp: Response) {
+        return resp.json({ NOTES: Notes.notes, ARCHIVE: ArchiveNotes.notes });
     }
 
-    static statistic(req: Request, resp: Response){
+    static statistic(req: Request, resp: Response) {
         return {
             Active: Notes.notes.length,
             Archive: ArchiveNotes.notes.length
