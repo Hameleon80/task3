@@ -1,4 +1,5 @@
-import { Request } from "express";
+import { NextFunction, Request } from "express";
+import { ApiError } from "../error/ApiError";
 import { Note } from "../repositories/Note";
 
 const months = [
@@ -9,7 +10,7 @@ const months = [
 export const getDatesFromText = (text: string) => {
     let result: string = '';
     if (text.length !== 0) {
-        const regex = /\d{2}\/\d{2}\/\d{4}/g;
+        const regex = /\d+\/\d+\/\d+/g;
         const array = Array.from(text.matchAll(regex));
 
         for (let i = 0; i < array.length; i++) {
@@ -22,13 +23,16 @@ export const getDatesFromText = (text: string) => {
 
 //Get note from array by id
 export function getNoteById(notes: Note[], id: number) {
-    let result: Note = new Note();
-    if (notes.length !== 0 && id >= 0) {
+    let result: Note = new Note(-1);
+    if (notes.length !== 0) {
         notes.map((item) => {
             if (item.getId() === id) {
                 result = item;
             }
         })
+    }
+    if (result.getId() === -1) {
+        throw new ApiError(400, "Id is incorrect");
     }
     return result;
 }
@@ -41,4 +45,9 @@ export function fillNoteValues(req: Request, note: Note) {
     note.setCategory(category);
     note.setText(text);
     return note;
+}
+
+//Delete note by id
+export function deleteNoteById(notes: Note[], id: number) {
+    return notes.filter((value) => value.getId() !== id);
 }

@@ -2,8 +2,8 @@ import { getDatesFromText } from "../helpers/util";
 
 export class Note {
 
-    constructor(id?: number, name?: string, dateCreate?: string, category?: string, text?: string){
-        this.id = id || -1;
+    constructor(id: number, name?: string, dateCreate?: string, category?: string, text?: string){
+        this.id = id;
         this.name = name || '';
         this.dateCreate = dateCreate || '';
         this.category = category || '';
