@@ -23,7 +23,7 @@ export const getDatesFromText = (text: string) => {
 //Get note from array by id
 export function getNoteById(notes: Note[], id: number) {
     let result: Note = new Note(-1);
-    if (notes.length !== 0 && id>=0) {
+    if (notes.length !== 0 && id >= 0) {
         notes.map((item) => {
             if (item.getId() === id) {
                 result = item;
@@ -38,9 +38,9 @@ export function getNoteById(notes: Note[], id: number) {
 
 //Fill object Note by values from request
 export function fillNoteValues(req: Request, note: Note) {
-    const { name, date, category, text } = req.body;
+    const { name, dateCreate, category, text } = req.body;
     note.setName(name);
-    note.setDateCreate(date);
+    note.setDateCreate(dateCreate);
     note.setCategory(category);
     note.setText(text);
     return note;
@@ -49,4 +49,15 @@ export function fillNoteValues(req: Request, note: Note) {
 //Delete note by id
 export function deleteNoteById(notes: Note[], id: number) {
     return notes.filter((value) => value.getId() !== id);
+}
+
+//Return true if array 'notes' have note with given 'id'. False if not.
+export function isValid(notes: Note[], id: number): boolean {
+    let result = false;
+    notes.map((value) => {
+        if (value.getId() === id) {
+            result = true;
+        }
+    })
+    return result;
 }
