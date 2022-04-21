@@ -1,11 +1,11 @@
-import { getDatesFromText } from "../helpers/util";
+import { getDatesFromText, prepareDate } from "../helpers/util";
 
 export class Note {
 
-    constructor(id: number, name?: string, dateCreate?: string, category?: string, text?: string){
+    constructor(id: number, name?: string, dateCreate: Date = new Date(), category?: string, text?: string){
         this.id = id;
         this.name = name || '';
-        this.dateCreate = dateCreate || '';
+        this.dateCreate = prepareDate(dateCreate);
         this.category = category || '';
         this.text = text || "";
         this.dates = getDatesFromText(text || "");
@@ -30,8 +30,8 @@ export class Note {
         return this.name;
     }
 
-    setDateCreate (dateCreate: string) {
-        this.dateCreate = dateCreate;
+    setDateCreate (dateCreate: Date) {
+        this.dateCreate = prepareDate(dateCreate);
     }
 
     getDateCreate () {

@@ -18,7 +18,7 @@ class Items {
      */
     static createNote(req: Request, resp: Response) {
         const { name, dateCreate, category, text } = req.body;
-        const newNote = new Note(Notes.notes.length + ArchiveNotes.notes.length, name, dateCreate, category, text);
+        const newNote = new Note(Notes.notes.length + ArchiveNotes.notes.length, name, new Date(dateCreate), category, text);
         Notes.notes.push(newNote);
         return resp.status(200).json(Notes.notes);
     }
@@ -66,7 +66,7 @@ class Items {
         }
         //If there is no notes with given id, throws error
         if (!isValidId) {
-            throw new ApiError(404, "Note is already not exist")
+            throw new ApiError(404, "Note it doesn't exist")
         }
 
         return resp.json({ NOTES: Notes.notes, ARCHIVE: ArchiveNotes.notes });
@@ -99,7 +99,7 @@ class Items {
             }
         }
         if (!isValidId) {
-            throw new ApiError(404, "Note don't exist")
+            throw new ApiError(404, "Note it doesn't exist")
         }
 
         return resp.json({ NOTES: Notes.notes, ARCHIVE: ArchiveNotes.notes });

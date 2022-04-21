@@ -20,6 +20,16 @@ export const getDatesFromText = (text: string) => {
     return result;
 }
 
+export const  prepareDate = (date: Date) => {
+    let result: string = '';
+    result += (
+        months[date.getMonth()] + ' ' +
+        (date.getDate() < 10 ? '0' + date.getDate() : date.getDate()) + ', ' +
+        date.getFullYear()
+    )
+    return result;
+}
+
 //Get note from array by id
 export function getNoteById(notes: Note[], id: number) {
     let result: Note = new Note(-1);
@@ -40,7 +50,7 @@ export function getNoteById(notes: Note[], id: number) {
 export function fillNoteValues(req: Request, note: Note) {
     const { name, dateCreate, category, text } = req.body;
     note.setName(name);
-    note.setDateCreate(dateCreate);
+    note.setDateCreate(new Date(dateCreate));
     note.setCategory(category);
     note.setText(text);
     return note;
